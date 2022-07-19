@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import eblog.domain.User;
@@ -20,6 +21,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	//@Autowired
+	//private PasswordEncoder passwordEncoder;
 
 	@Override
 	public UserDto createUser(UserDto userDto) {
@@ -65,12 +69,7 @@ public class UserServiceImpl implements UserService {
 
 	private User convertToUser(UserDto dto) {
 		User user = modelMapper.map(dto, User.class);
-		
-//		user.setName(dto.getName());
-//		user.setEmail(dto.getEmail());
-//		user.setAbout(dto.getAbout());
-//		user.setPassword(dto.getPassword());
-//		user.setId(dto.getId());
+		//user.setPassword(this.passwordEncoder.encode(dto.getPassword()));
 
 		return user;
 	}
