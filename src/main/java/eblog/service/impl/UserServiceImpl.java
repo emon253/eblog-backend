@@ -5,12 +5,16 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 //import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import eblog.config.Const;
+import eblog.domain.Role;
 import eblog.domain.User;
 import eblog.dto.UserDto;
 import eblog.exception.ResourceNotFoundException;
+import eblog.repository.RoleRepository;
 import eblog.repository.UserRepository;
 import eblog.service.UserService;
 
@@ -18,6 +22,12 @@ import eblog.service.UserService;
 public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserRepository repository;
+	
+	@Autowired
+	private RoleRepository roleRepository;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	@Autowired
 	private ModelMapper modelMapper;
@@ -29,7 +39,22 @@ public class UserServiceImpl implements UserService {
 	public UserDto createUser(UserDto userDto) {
 
 		User user = convertToUser(userDto);
+		
 		this.repository.save(user);
+		
+		user.getRoles().add(Const.ROLE_NORMAL);
+		
+		return convertToUserDto(user);
+	}
+	
+	@Override
+	public UserDto registerNewUser(UserDto userDto) {
+		User user = convertToUser(userDto);
+		
+		user.getRoles().add(Const.ROLE_ADMIN);
+		
+		User newUser = this.repository.save(user);
+		
 		return convertToUserDto(user);
 	}
 
@@ -69,7 +94,7 @@ public class UserServiceImpl implements UserService {
 
 	private User convertToUser(UserDto dto) {
 		User user = modelMapper.map(dto, User.class);
-		//user.setPassword(this.passwordEncoder.encode(dto.getPassword()));
+		user.setPassword(this.passwordEncoder.encode(dto.getPassword()));
 
 		return user;
 	}
@@ -80,4 +105,6 @@ public class UserServiceImpl implements UserService {
 
 		return userDto;
 	}
+
+	
 }

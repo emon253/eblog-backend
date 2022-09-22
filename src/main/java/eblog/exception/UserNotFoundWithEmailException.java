@@ -16,11 +16,15 @@ public class UserNotFoundWithEmailException extends RuntimeException{
 	private String fieldName;
 	private String fieldValue;
 	
+	private String message;
 	public UserNotFoundWithEmailException(String resourceName, String fieldName, String fieldValue) {
 		super(String.format("%s not found with %s : %d", resourceName, fieldName, fieldValue));
 		this.resourceName = resourceName;
 		this.fieldName = fieldName;
 		this.fieldValue = fieldValue;
+	}
+	public UserNotFoundWithEmailException(String message) {
+		this.message = message;
 	}
 	
 	

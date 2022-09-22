@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +28,7 @@ public class UserController {
 	private UserService service;
 
 	// create users
-	@PostMapping("/")
+	@PostMapping("/create")
 	public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
 		return new ResponseEntity<>(this.service.createUser(userDto), HttpStatus.CREATED);
 
@@ -41,6 +42,7 @@ public class UserController {
 	}
 
 	// delete
+	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteUser(@PathVariable("id") int id){
 		this.service.deleteUser(id);
